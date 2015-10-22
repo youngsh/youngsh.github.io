@@ -186,7 +186,7 @@
   
     <div class="article-meta">
       <a href="/2015/10/22/weixinApi/" class="article-date">
-  	<time datetime="2015-10-22T11:15:00.140Z" itemprop="datePublished">2015-10-22</time>
+  	<time datetime="2015-10-22T11:29:12.760Z" itemprop="datePublished">2015-10-22</time>
 </a>
     </div>
   
@@ -210,7 +210,7 @@
       
         <p>针对微信浏览器中的页面，如需使用微信客户端相关的功能，需使用其jsSDK, 常见操作如分享，图片，声音，以及对原生菜单选项的操作等<br>需引入<a href="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" target="_blank" rel="external">微信JSSDK</a></p>
 <h1 id="开发流程及注意">开发流程及注意</h1><blockquote>
-<p>微信公众号的申请，及其域名绑定<br><a href="http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html" target="_blank" rel="external">微信JS-SDK说明文档</a><br>access_token , jsapi_tiket的获取，必须缓存，最长两个小时<br>由于url中会带参数，别人分享的微信链接打开时会附带上from=singlemessage&amp;isappinstalled=0参数，故，为能正确提取url参数，必须全字段进行encodeURIComponent<br>请求的当前页面中，若有中文，则必须保持页面的URL与参数中的完全一致(不包含hash)<br>获取微信conf可走异步接口获取，在回调函数中再执行相关的初始化<br>在调用checkjsapi，chooseImage接口时提示，errmsg：function not exist;是因为版本没有升级<br>在版本没有升级到6.0.2,分享到朋友圈，分享给好友的接口可用<br>wx相关api均需在 wx.ready 后回调进行</p>
+<p>微信公众号的申请，及其域名绑定<br><a href="http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html" target="_blank" rel="external">微信JS-SDK说明文档</a><br>access_token , jsapi_tiket的获取，必须缓存，最长两个小时<br>由于url中会带参数，别人分享的微信链接打开时会附带上from=singlemessage&amp;isappinstalled=0参数，故，为能正确提取url参数，必须全字段进行encodeURIComponent<br>请求的当前页面中，若有中文，则必须保持页面的URL与参数中的完全一致(不包含hash)<br>获取微信conf可走异步接口获取，在回调函数中再执行相关的初始化<br>在调用checkjsapi，chooseImage接口时提示，errmsg：function not exist;是因为版本没有升级<br>在版本没有升级到6.0.2,分享到朋友圈，分享给好友的接口可用<br>wx相关api均需在 wx.ready 后回调进行<br><a href="http://dailythinkdo.sinaapp.com/wx/php/sample.php" target="_blank" rel="external">在线demo</a></p>
 </blockquote>
 <h2 id="分享相关API">分享相关API</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wx.onMenuShareTimeline(event);</span><br><span class="line">wx.onMenuShareAppMessage(event);</span><br><span class="line">wx.onMenuShareQQ(event);</span><br><span class="line">wx.onMenuShareWeibo(event);</span><br><span class="line">wx.onMenuShareQZone(event);</span><br></pre></td></tr></table></figure>
 <blockquote>
