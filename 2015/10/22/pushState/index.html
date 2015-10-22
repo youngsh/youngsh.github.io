@@ -3,47 +3,35 @@
 <head>
   <meta charset="utf-8">
   
-  <title>hexo 安装 | My Blog</title>
+  <title>HTML5 之 pushState | My Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="steps
-必须有的环境： node, mpm, hexo
-mkdir demo
-cd demo, hexo init
-npm install
-在source&amp;gt;_posts下写自己的内容，md文件
-hexo g  编译md -&amp;gt; html
-hexo d  发布
-参考
+  <meta name="description" content="功效
 
-文档结构├── _config.yml #配置文件，包括git配置在内├── db.json├── node_modu">
+对于单页局部更新数据,整体页面无刷—ajax
+到要求地址栏url跟随变动—pushState  replaceState
+切浏览器前进后退按钮有效—popstate   onpopstate
+pjax api 形式
+history.pushState(state, title, href);history.replaceState—-参数一样window.addEventListener(">
 <meta property="og:type" content="article">
-<meta property="og:title" content="hexo 安装">
-<meta property="og:url" content="youngsh.github.io/2015/10/10/hexo-install/index.html">
+<meta property="og:title" content="HTML5 之 pushState">
+<meta property="og:url" content="youngsh.github.io/2015/10/22/pushState/index.html">
 <meta property="og:site_name" content="My Blog">
-<meta property="og:description" content="steps
-必须有的环境： node, mpm, hexo
-mkdir demo
-cd demo, hexo init
-npm install
-在source&amp;gt;_posts下写自己的内容，md文件
-hexo g  编译md -&amp;gt; html
-hexo d  发布
-参考
+<meta property="og:description" content="功效
 
-文档结构├── _config.yml #配置文件，包括git配置在内├── db.json├── node_modu">
+对于单页局部更新数据,整体页面无刷—ajax
+到要求地址栏url跟随变动—pushState  replaceState
+切浏览器前进后退按钮有效—popstate   onpopstate
+pjax api 形式
+history.pushState(state, title, href);history.replaceState—-参数一样window.addEventListener(">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="hexo 安装">
-<meta name="twitter:description" content="steps
-必须有的环境： node, mpm, hexo
-mkdir demo
-cd demo, hexo init
-npm install
-在source&amp;gt;_posts下写自己的内容，md文件
-hexo g  编译md -&amp;gt; html
-hexo d  发布
-参考
+<meta name="twitter:title" content="HTML5 之 pushState">
+<meta name="twitter:description" content="功效
 
-文档结构├── _config.yml #配置文件，包括git配置在内├── db.json├── node_modu">
+对于单页局部更新数据,整体页面无刷—ajax
+到要求地址栏url跟随变动—pushState  replaceState
+切浏览器前进后退按钮有效—popstate   onpopstate
+pjax api 形式
+history.pushState(state, title, href);history.replaceState—-参数一样window.addEventListener(">
   
   
     <link rel="icon" href="/favicon.png">
@@ -210,11 +198,11 @@ hexo d  发布
 		</header>				
 	</div>
 </nav>
-      <div class="body-wrap"><article id="post-hexo-install" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-pushState" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/10/hexo-install/" class="article-date">
-  	<time datetime="2015-10-10T08:50:39.539Z" itemprop="datePublished">2015-10-10</time>
+      <a href="/2015/10/22/pushState/" class="article-date">
+  	<time datetime="2015-10-22T11:14:35.413Z" itemprop="datePublished">2015-10-22</time>
 </a>
     </div>
   
@@ -227,7 +215,7 @@ hexo d  发布
         
   
     <h1 class="article-title" itemprop="name">
-      hexo 安装
+      HTML5 之 pushState
     </h1>
   
 
@@ -243,20 +231,54 @@ hexo d  发布
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="steps">steps</h2><ol>
-<li>必须有的环境： node, mpm, hexo</li>
-<li>mkdir demo</li>
-<li>cd demo, hexo init</li>
-<li>npm install</li>
-<li>在source&gt;_posts下写自己的内容，md文件</li>
-<li>hexo g  编译md -&gt; html</li>
-<li>hexo d  发布</li>
-<li><a href="http://segmentfault.com/a/1190000002538363" target="_blank" rel="external">参考</a></li>
-</ol>
-<h2 id="文档结构">文档结构</h2><p>├── _config.yml #配置文件，包括git配置在内<br>├── db.json<br>├── node_modules<br>│   ├── hexo<br>│   ├── hexo-deployer-git<br>│   ├── hexo-generator-archive<br>│   ├── hexo-generator-category<br>│   ├── hexo-generator-index<br>│   ├── hexo-generator-tag<br>│   ├── hexo-renderer-ejs<br>│   ├── hexo-renderer-marked<br>│   ├── hexo-renderer-stylus<br>│   └── hexo-server<br>├── package.json<br>├── public #编译成的html文档<br>│   ├── 2015<br>│   ├── archives<br>│   ├── css<br>│   ├── fancybox<br>│   ├── index.html<br>│   └── js<br>├── scaffolds<br>│   ├── draft.md<br>│   ├── page.md<br>│   └── post.md<br>├── source<br>│   └── _posts#个人编辑的md原始文档<br>└── themes<br>    └── landscape</p>
-<h3 id="安装hexo期间的一些问题">安装hexo期间的一些问题</h3><blockquote>
-<p>hexo 版本为3.0后，hexo d 命令下可能出现 ERROR Deployer not found: git<br>解决办法：npm install hexo-deployer-git —save</p>
+        <p>功效</p>
+<ol>
+<li>对于单页局部更新数据,整体页面无刷—ajax</li>
+<li>到要求地址栏url跟随变动—pushState  replaceState</li>
+<li>切浏览器前进后退按钮有效—popstate   onpopstate</li>
+<li><a href="https://github.com/welefen/pjax" target="_blank" rel="external">pjax</a> <h2 id="api_形式">api 形式</h2><blockquote>
+<p>history.pushState(state, title, href);<br>history.replaceState—-参数一样<br>window.addEventListener(‘popstate’, function (e) {})</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> state = &#123;</span><br><span class="line">    title: title,<span class="comment">//部分浏览器上 跟state中的title url无关</span></span><br><span class="line">    url: options.url,</span><br><span class="line">    otherkey: othervalue</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 </blockquote>
+</li>
+</ol>
+<h2 id="使用">使用</h2><ol>
+<li>pushState 可将设置当前地址框url ,title, 并将当前用以渲染的数据塞入history供前进后退时重新render时使用</li>
+<li>replaceState 同上，不同的是是替换信息，可用作初次渲染使用，从而可回退到首屏，并作为当前窗口的历史第一屏</li>
+<li>对于前进后退按钮，通过绑定popstate事件，获取当时塞入的数据重新渲染即可<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'popstate'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(e.state)&#123;</span><br><span class="line">        render(e.state);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="无能为力的事"><strong>无能为力的事</strong></h2><p>1、设置的url无法跨域<br>2、存在history中的数据state, 其各个字段的值只能是字符串，不能时对象，state本身属性可多个（任意）</p>
+<h2 id="浏览器兼容性">浏览器兼容性</h2><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Chrome</th>
+<th>Firefox (Gecko)</th>
+<th>Internet Explorer</th>
+<th>Opera</th>
+<th>Safari</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>replaceState, pushState</td>
+<td>5</td>
+<td>4.0 (2.0)</td>
+<td>10</td>
+<td>11.50</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>history.state</td>
+<td>18</td>
+<td>4.0(2.0)</td>
+<td>10</td>
+<td>11.50</td>
+<td>6.0</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
@@ -266,18 +288,18 @@ hexo d  发布
     
 <nav id="article-nav">
   
-    <a href="/2015/10/22/pushState/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2015/10/22/weixinApi/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          HTML5 之 pushState
+          微信JS SDK
         
       </div>
     </a>
   
   
-    <a href="/2015/10/10/requirejs/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">require 笔记</div>
+    <a href="/2015/10/10/hexo-install/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">hexo 安装</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -291,7 +313,7 @@ hexo d  发布
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="hexo-install" data-title="hexo 安装" data-url="youngsh.github.io/2015/10/10/hexo-install/"></div>
+	<div class="ds-thread" data-thread-key="pushState" data-title="HTML5 之 pushState" data-url="youngsh.github.io/2015/10/22/pushState/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
