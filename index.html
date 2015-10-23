@@ -186,7 +186,7 @@
   
     <div class="article-meta">
       <a href="/2015/10/23/requirejs/" class="article-date">
-  	<time datetime="2015-10-23T03:20:43.005Z" itemprop="datePublished">2015-10-23</time>
+  	<time datetime="2015-10-23T03:22:42.383Z" itemprop="datePublished">2015-10-23</time>
 </a>
     </div>
   
@@ -210,7 +210,7 @@
       
         <p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
 <h1 id="代码组织结构">代码组织结构</h1><blockquote>
-<p>在相应的html中通过 ‘<script data-main="js/page/app.js" src="js/require.js"></script>‘ 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
+<p>在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
 </blockquote>
 <h1 id="page_入口文件">page 入口文件</h1><h2 id="requirejs_config">requirejs config</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>.config(&#123;</span><br><span class="line">    baseUrl: <span class="string">'/mjs/'</span>,</span><br><span class="line">    urlArgs: <span class="string">'v='</span> + ver,</span><br><span class="line">    paths: &#123;</span><br><span class="line">        jquery: <span class="string">'lib/jquery'</span>,</span><br><span class="line">        storage:<span class="string">'lib/jquery.storageapi.min'</span>,</span><br><span class="line">        cookie:<span class="string">'lib/jquery.cookie'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    shim: &#123;</span><br><span class="line">        <span class="string">'lib/iscroll'</span>: &#123;</span><br><span class="line">            exports: <span class="string">'IScroll'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    config: &#123;</span><br><span class="line">        <span class="string">'module/getMore'</span>: &#123;</span><br><span class="line">            total: <span class="number">15</span></span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <h2 id="config详解">config详解</h2><ul>
