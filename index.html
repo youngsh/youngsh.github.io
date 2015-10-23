@@ -182,6 +182,88 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-requirejs" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/23/requirejs/" class="article-date">
+  	<time datetime="2015-10-23T03:20:43.005Z" itemprop="datePublished">2015-10-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/23/requirejs/">require 笔记</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
+<h1 id="代码组织结构">代码组织结构</h1><blockquote>
+<p>在相应的html中通过 ‘<script data-main="js/page/app.js" src="js/require.js"></script>‘ 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
+</blockquote>
+<h1 id="page_入口文件">page 入口文件</h1><h2 id="requirejs_config">requirejs config</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>.config(&#123;</span><br><span class="line">    baseUrl: <span class="string">'/mjs/'</span>,</span><br><span class="line">    urlArgs: <span class="string">'v='</span> + ver,</span><br><span class="line">    paths: &#123;</span><br><span class="line">        jquery: <span class="string">'lib/jquery'</span>,</span><br><span class="line">        storage:<span class="string">'lib/jquery.storageapi.min'</span>,</span><br><span class="line">        cookie:<span class="string">'lib/jquery.cookie'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    shim: &#123;</span><br><span class="line">        <span class="string">'lib/iscroll'</span>: &#123;</span><br><span class="line">            exports: <span class="string">'IScroll'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    config: &#123;</span><br><span class="line">        <span class="string">'module/getMore'</span>: &#123;</span><br><span class="line">            total: <span class="number">15</span></span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="config详解">config详解</h2><ul>
+<li>所有模块，依赖都默认为是js,无需加上.js后缀</li>
+<li>config需在入口处，保证先执行，也可写在html中</li>
+<li>paths 映射不直接放置在baseUrl下的模块名，一般相对路径，之后，可用映射名代替这一模块，一般用以映射lib库, 映射对象也可是绝对路径，或者完整URL(with https?)</li>
+<li>shim  可将非AMD规范的依赖规范化，之后，每项可直接作为依赖直接使用了, 。每项包含3个参数：</li>
+</ul>
+<ol>
+<li>exports可将这一依赖注入到全局中，作为全局变量</li>
+<li>deps:[该依赖的依赖列表]，其依赖在配置时并未加载，只有当改依赖需要被载入时</li>
+<li>init: construct function + 解决变量冲突的问题(由于不符合AMD规范的库可能使用相同的全局变量，从而引起冲突，一般是通过第三方依赖的noConflict方法实现)</li>
+</ol>
+<ul>
+<li>map 用以进行版本映射，以在不同页面中使用不同的依赖版本，一般用不着，谁没事弄几个版本的代码一起用啊</li>
+<li>config 应用级的参数传递，用以向模块(modules中的文件)传递参数，应用级，即不同的页面调用相同的子模块实现不同的效果，向子模块传递参数，每一项是一个模块，以及该模块需使用的参数,如，在 模块getMore中，可使用module.config().total获取该参数</li>
+<li>其他，packages(引入包，其住模块为index.js)，urlArgs, scriptType…</li>
+</ul>
+<h2 id="packages_模块加载">packages 模块加载</h2><blockquote>
+<p>??? 待续</p>
+</blockquote>
+<h2 id="requirejs_入口">requirejs 入口</h2><p>require( [module list], function( module ) {} ) 其中，各个模块载入的顺序和参数一致</p>
+<h1 id="模块">模块</h1><h2 id="创建模块">创建模块</h2><blockquote>
+<p>module中，每个文件作为一个模块，每个模块是个大的闭包，可以防止变量污染</p>
+<p>两种创建方式,第一种方式中，depslist 可缺省，此时无依赖 第二种方式中，require也作为一个依赖注入到模块中<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define([deps list], <span class="function"><span class="keyword">function</span><span class="params">(deps name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;);</span><br><span class="line">define(<span class="function"><span class="keyword">function</span><span class="params">(require, exports, module)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> depsA = <span class="built_in">require</span>(<span class="string">'a'</span>);</span><br><span class="line">    exports = obj;</span><br><span class="line">    or</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h1 id="其它">其它</h1><blockquote>
+<p>测试模块时，可通过 require(“module/name”).func() 来调用某个对外方法测试(前提是，该模块已经载入了)<br>jsonp服务依赖 callback=define !!!<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">"http://example.com/api/data.json?callback=define"</span>],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="params">(data)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//The data object will be the API response for the</span></span><br><span class="line">        <span class="comment">//JSONP data call.</span></span><br><span class="line">        <span class="built_in">console</span>.log(data);</span><br><span class="line">        &#125;</span><br><span class="line">   );</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
     <article id="post-weixinApi" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -449,88 +531,6 @@
 <h2 id="文档结构">文档结构</h2><p>├── _config.yml #配置文件，包括git配置在内<br>├── db.json<br>├── node_modules<br>│   ├── hexo<br>│   ├── hexo-deployer-git<br>│   ├── hexo-generator-archive<br>│   ├── hexo-generator-category<br>│   ├── hexo-generator-index<br>│   ├── hexo-generator-tag<br>│   ├── hexo-renderer-ejs<br>│   ├── hexo-renderer-marked<br>│   ├── hexo-renderer-stylus<br>│   └── hexo-server<br>├── package.json<br>├── public #编译成的html文档<br>│   ├── 2015<br>│   ├── archives<br>│   ├── css<br>│   ├── fancybox<br>│   ├── index.html<br>│   └── js<br>├── scaffolds<br>│   ├── draft.md<br>│   ├── page.md<br>│   └── post.md<br>├── source<br>│   └── _posts#个人编辑的md原始文档<br>└── themes<br>    └── landscape</p>
 <h3 id="安装hexo期间的一些问题">安装hexo期间的一些问题</h3><blockquote>
 <p>hexo 版本为3.0后，hexo d 命令下可能出现 ERROR Deployer not found: git<br>解决办法：npm install hexo-deployer-git —save</p>
-</blockquote>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-requirejs" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/10/10/requirejs/" class="article-date">
-  	<time datetime="2015-10-10T08:29:13.931Z" itemprop="datePublished">2015-10-10</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/10/requirejs/">require 笔记</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
-<h1 id="代码组织结构">代码组织结构</h1><blockquote>
-<p>在相应的html中通过 <script data-main="js/page/app.js" src="js/require.js"></script> 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
-</blockquote>
-<h1 id="page_入口文件">page 入口文件</h1><h2 id="requirejs_config">requirejs config</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>.config(&#123;</span><br><span class="line">    baseUrl: <span class="string">'/mjs/'</span>,</span><br><span class="line">    urlArgs: <span class="string">'v='</span> + ver,</span><br><span class="line">    paths: &#123;</span><br><span class="line">        jquery: <span class="string">'lib/jquery'</span>,</span><br><span class="line">        storage:<span class="string">'lib/jquery.storageapi.min'</span>,</span><br><span class="line">        cookie:<span class="string">'lib/jquery.cookie'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    shim: &#123;</span><br><span class="line">        <span class="string">'lib/iscroll'</span>: &#123;</span><br><span class="line">            exports: <span class="string">'IScroll'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    config: &#123;</span><br><span class="line">        <span class="string">'module/getMore'</span>: &#123;</span><br><span class="line">            total: <span class="number">15</span></span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="config详解">config详解</h2><ul>
-<li>所有模块，依赖都默认为是js,无需加上.js后缀</li>
-<li>config需在入口处，保证先执行，也可写在html中</li>
-<li>paths 映射不直接放置在baseUrl下的模块名，一般相对路径，之后，可用映射名代替这一模块，一般用以映射lib库, 映射对象也可是绝对路径，或者完整URL(with https?)</li>
-<li>shim  可将非AMD规范的依赖规范化，之后，每项可直接作为依赖直接使用了, 。每项包含3个参数：</li>
-</ul>
-<ol>
-<li>exports可将这一依赖注入到全局中，作为全局变量</li>
-<li>deps:[该依赖的依赖列表]，其依赖在配置时并未加载，只有当改依赖需要被载入时</li>
-<li>init: construct function + 解决变量冲突的问题(由于不符合AMD规范的库可能使用相同的全局变量，从而引起冲突，一般是通过第三方依赖的noConflict方法实现)</li>
-</ol>
-<ul>
-<li>map 用以进行版本映射，以在不同页面中使用不同的依赖版本，一般用不着，谁没事弄几个版本的代码一起用啊</li>
-<li>config 应用级的参数传递，用以向模块(modules中的文件)传递参数，应用级，即不同的页面调用相同的子模块实现不同的效果，向子模块传递参数，每一项是一个模块，以及该模块需使用的参数,如，在 模块getMore中，可使用module.config().total获取该参数</li>
-<li>其他，packages(引入包，其住模块为index.js)，urlArgs, scriptType…</li>
-</ul>
-<h2 id="packages_模块加载">packages 模块加载</h2><blockquote>
-<p>??? 待续</p>
-</blockquote>
-<h2 id="requirejs_入口">requirejs 入口</h2><p>require( [module list], function( module ) {} ) 其中，各个模块载入的顺序和参数一致</p>
-<h1 id="模块">模块</h1><h2 id="创建模块">创建模块</h2><blockquote>
-<p>module中，每个文件作为一个模块，每个模块是个大的闭包，可以防止变量污染</p>
-<p>两种创建方式,第一种方式中，depslist 可缺省，此时无依赖 第二种方式中，require也作为一个依赖注入到模块中<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define([deps list], <span class="function"><span class="keyword">function</span><span class="params">(deps name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;);</span><br><span class="line">define(<span class="function"><span class="keyword">function</span><span class="params">(require, exports, module)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> depsA = <span class="built_in">require</span>(<span class="string">'a'</span>);</span><br><span class="line">    exports = obj;</span><br><span class="line">    or</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h1 id="其它">其它</h1><blockquote>
-<p>测试模块时，可通过 require(“module/name”).func() 来调用某个对外方法测试(前提是，该模块已经载入了)<br>jsonp服务依赖 callback=define !!!<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">"http://example.com/api/data.json?callback=define"</span>],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="params">(data)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//The data object will be the API response for the</span></span><br><span class="line">        <span class="comment">//JSONP data call.</span></span><br><span class="line">        <span class="built_in">console</span>.log(data);</span><br><span class="line">        &#125;</span><br><span class="line">   );</span><br></pre></td></tr></table></figure></p>
 </blockquote>
 
       
