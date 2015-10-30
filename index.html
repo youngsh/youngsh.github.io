@@ -182,93 +182,11 @@
 </nav>
       <div class="body-wrap">
   
-    <article id="post-requirejs" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/10/23/requirejs/" class="article-date">
-  	<time datetime="2015-10-23T03:22:42.383Z" itemprop="datePublished">2015-10-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/23/requirejs/">require 笔记</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
-<h1 id="代码组织结构">代码组织结构</h1><blockquote>
-<p>在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
-</blockquote>
-<h1 id="page_入口文件">page 入口文件</h1><h2 id="requirejs_config">requirejs config</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>.config(&#123;</span><br><span class="line">    baseUrl: <span class="string">'/mjs/'</span>,</span><br><span class="line">    urlArgs: <span class="string">'v='</span> + ver,</span><br><span class="line">    paths: &#123;</span><br><span class="line">        jquery: <span class="string">'lib/jquery'</span>,</span><br><span class="line">        storage:<span class="string">'lib/jquery.storageapi.min'</span>,</span><br><span class="line">        cookie:<span class="string">'lib/jquery.cookie'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    shim: &#123;</span><br><span class="line">        <span class="string">'lib/iscroll'</span>: &#123;</span><br><span class="line">            exports: <span class="string">'IScroll'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    config: &#123;</span><br><span class="line">        <span class="string">'module/getMore'</span>: &#123;</span><br><span class="line">            total: <span class="number">15</span></span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h2 id="config详解">config详解</h2><ul>
-<li>所有模块，依赖都默认为是js,无需加上.js后缀</li>
-<li>config需在入口处，保证先执行，也可写在html中</li>
-<li>paths 映射不直接放置在baseUrl下的模块名，一般相对路径，之后，可用映射名代替这一模块，一般用以映射lib库, 映射对象也可是绝对路径，或者完整URL(with https?)</li>
-<li>shim  可将非AMD规范的依赖规范化，之后，每项可直接作为依赖直接使用了, 。每项包含3个参数：</li>
-</ul>
-<ol>
-<li>exports可将这一依赖注入到全局中，作为全局变量</li>
-<li>deps:[该依赖的依赖列表]，其依赖在配置时并未加载，只有当改依赖需要被载入时</li>
-<li>init: construct function + 解决变量冲突的问题(由于不符合AMD规范的库可能使用相同的全局变量，从而引起冲突，一般是通过第三方依赖的noConflict方法实现)</li>
-</ol>
-<ul>
-<li>map 用以进行版本映射，以在不同页面中使用不同的依赖版本，一般用不着，谁没事弄几个版本的代码一起用啊</li>
-<li>config 应用级的参数传递，用以向模块(modules中的文件)传递参数，应用级，即不同的页面调用相同的子模块实现不同的效果，向子模块传递参数，每一项是一个模块，以及该模块需使用的参数,如，在 模块getMore中，可使用module.config().total获取该参数</li>
-<li>其他，packages(引入包，其住模块为index.js)，urlArgs, scriptType…</li>
-</ul>
-<h2 id="packages_模块加载">packages 模块加载</h2><blockquote>
-<p>??? 待续</p>
-</blockquote>
-<h2 id="requirejs_入口">requirejs 入口</h2><p>require( [module list], function( module ) {} ) 其中，各个模块载入的顺序和参数一致</p>
-<h1 id="模块">模块</h1><h2 id="创建模块">创建模块</h2><blockquote>
-<p>module中，每个文件作为一个模块，每个模块是个大的闭包，可以防止变量污染</p>
-<p>两种创建方式,第一种方式中，depslist 可缺省，此时无依赖 第二种方式中，require也作为一个依赖注入到模块中<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define([deps list], <span class="function"><span class="keyword">function</span><span class="params">(deps name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;);</span><br><span class="line">define(<span class="function"><span class="keyword">function</span><span class="params">(require, exports, module)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> depsA = <span class="built_in">require</span>(<span class="string">'a'</span>);</span><br><span class="line">    exports = obj;</span><br><span class="line">    or</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h1 id="其它">其它</h1><blockquote>
-<p>测试模块时，可通过 require(“module/name”).func() 来调用某个对外方法测试(前提是，该模块已经载入了)<br>jsonp服务依赖 callback=define !!!<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">"http://example.com/api/data.json?callback=define"</span>],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="params">(data)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//The data object will be the API response for the</span></span><br><span class="line">        <span class="comment">//JSONP data call.</span></span><br><span class="line">        <span class="built_in">console</span>.log(data);</span><br><span class="line">        &#125;</span><br><span class="line">   );</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
     <article id="post-weixinApi" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/22/weixinApi/" class="article-date">
-  	<time datetime="2015-10-22T12:23:37.366Z" itemprop="datePublished">2015-10-22</time>
+      <a href="/2015/10/30/weixinApi/" class="article-date">
+  	<time datetime="2015-10-30T06:15:58.403Z" itemprop="datePublished">2015-10-30</time>
 </a>
     </div>
   
@@ -277,99 +195,44 @@
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/22/weixinApi/">微信JS SDK</a>
-    </h1>
-  
-
-      </header>
-      
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>针对微信浏览器中的页面，如需使用微信客户端相关的功能，需使用其jsSDK, 常见操作如分享，图片，声音，以及对原生菜单选项的操作等<br>需引入<a href="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" target="_blank" rel="external">微信JSSDK</a></p>
-<h1 id="开发流程及注意">开发流程及注意</h1><blockquote>
-<p>微信公众号的申请，及其域名绑定<br><a href="http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html" target="_blank" rel="external">微信JS-SDK说明文档</a><br>access_token , jsapi_tiket的获取，必须缓存，最长两个小时<br>由于url中会带参数，别人分享的微信链接打开时会附带上from=singlemessage&amp;isappinstalled=0参数，故，为能正确提取url参数，必须全字段进行encodeURIComponent<br>请求的当前页面中，若有中文，则必须保持页面的URL与参数中的完全一致(不包含hash)<br>获取微信conf可走异步接口获取，在回调函数中再执行相关的初始化<br>在调用checkjsapi，chooseImage接口时提示，errmsg：function not exist;是因为版本没有升级<br>在版本没有升级到6.0.2,分享到朋友圈，分享给好友的接口可用<br>wx相关api均需在 wx.ready 后回调进行<br><a href="http://dailythinkdo.sinaapp.com/wx/php/sample.php" target="_blank" rel="external">在线demo</a></p>
-</blockquote>
-<h2 id="分享相关API">分享相关API</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wx.onMenuShareTimeline(event);</span><br><span class="line">wx.onMenuShareAppMessage(event);</span><br><span class="line">wx.onMenuShareQQ(event);</span><br><span class="line">wx.onMenuShareWeibo(event);</span><br><span class="line">wx.onMenuShareQZone(event);</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>event包括 title link imgUrl desc trigger(function) complete(function)等内容<br>jsJDK中的分享，只是将数据绑定到相关的按钮上，可多次绑定(覆盖), 如果单页面中，event中仅内容可变，其它均相同，为防止多次绑定该时间，可通过更改 event.triger 中更新数据<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">event.trigger = <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.title = <span class="built_in">document</span>.title;</span><br><span class="line">    <span class="keyword">this</span>.link = <span class="built_in">document</span>.location.href;</span><br><span class="line">    <span class="keyword">this</span>.imgUrl = <span class="string">'http://p3.123.sogoucdn.com/imgu/2015/05/20150511120138_306.png'</span>; </span><br><span class="line">    <span class="keyword">this</span>.desc = <span class="built_in">document</span>.title;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h2 id="图片相关API">图片相关API</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> images = &#123;</span><br><span class="line">    localId: [],</span><br><span class="line">    serverId: []</span><br><span class="line">&#125;;</span><br><span class="line">wx.chooseImage(&#123;</span><br><span class="line"> success: <span class="function"><span class="keyword">function</span> <span class="params">(res)</span> </span>&#123;</span><br><span class="line">        images.localId = res.localIds;</span><br><span class="line">        <span class="keyword">var</span> image = <span class="built_in">document</span>.createElement(<span class="string">"img"</span>);</span><br><span class="line">        image.src = res.localIds;</span><br><span class="line">        <span class="built_in">document</span>.querySelector(<span class="string">"#imageList"</span>).appendChild(image);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">wx.previewImage(&#123;</span><br><span class="line">current: <span class="string">"http://img5.douban.com/view/photo/photo/public/p1353993776.jpg"</span>,</span><br><span class="line">urls :  [</span><br><span class="line">          <span class="string">"http://img3.douban.com/view/photo/photo/public/p2152117150.jpg"</span>,</span><br><span class="line">          <span class="string">"http://img3.douban.com/view/photo/photo/public/p2152117150.jpg"</span></span><br><span class="line">]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.uploadImage(&#123;</span><br><span class="line">    localId: images.localId[i],</span><br><span class="line">    isShowProgressTips:<span class="number">1</span>,</span><br><span class="line">    success : <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">            i++;</span><br><span class="line">            images.serverId.push(res.serverId);</span><br><span class="line">            <span class="keyword">if</span>(i&lt;len)&#123;</span><br><span class="line">                upload();</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    fail: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        alert(<span class="built_in">JSON</span>.stringify(res));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)	</span><br><span class="line"></span><br><span class="line">wx.downloadImage(&#123;</span><br><span class="line">    serverId: images.serverId[i],</span><br><span class="line">    isShowProgressTips: <span class="number">1</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        i++;</span><br><span class="line">        alert(res.localId);</span><br><span class="line">        <span class="keyword">if</span>(i&lt;len)&#123;</span><br><span class="line">            down();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+        <h2 id="#">#</h2><p>针对微信浏览器中的页面，如需使用微信客户端相关的功能，需使用其jsSDK, 常见操作如分享，图片，声音，以及对原生菜单选项的操作等<br>需引入<a href="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" target="_blank" rel="external">微信JSSDK</a></p>
+<hr>
+<h3 id="开发流程及注意">开发流程及注意</h3><ol>
+<li>微信公众号的申请，及其域名绑定</li>
+<li><a href="http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html" target="_blank" rel="external">微信JS-SDK说明文档</a></li>
+<li>access_token , jsapi_tiket的获取，必须缓存，最长两个小时</li>
+<li>由于url中会带参数，别人分享的微信链接打开时会附带上from=singlemessage&amp;isappinstalled=0参数，故，为能正确提取url参数，必须全字段进行encodeURIComponent</li>
+<li>请求的当前页面中，若有中文，则必须保持页面的URL与参数中的完全一致(不包含hash)</li>
+<li>获取微信conf可走异步接口获取，在回调函数中再执行相关的初始化</li>
+<li>在调用checkjsapi，chooseImage接口时提示，errmsg：function not exist;是因为版本没有升级</li>
+<li>在版本没有升级到6.0.2,分享到朋友圈，分享给好友的接口可用</li>
+<li>wx相关api均需在 wx.ready 后回调进行</li>
+<li><a href="http://dailythinkdo.sinaapp.com/wx/php/sample.php" target="_blank" rel="external">在线demo</a></li>
+</ol>
+<h3 id="分享相关API">分享相关API</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wx.onMenuShareTimeline(event);</span><br><span class="line">wx.onMenuShareAppMessage(event);</span><br><span class="line">wx.onMenuShareQQ(event);</span><br><span class="line">wx.onMenuShareWeibo(event);</span><br><span class="line">wx.onMenuShareQZone(event);</span><br></pre></td></tr></table></figure>
+<ol>
+<li>event包括 title link imgUrl desc trigger(function) complete(function)等内容</li>
+<li>jsJDK中的分享，只是将数据绑定到相关的按钮上，可多次绑定(覆盖), 如果单页面中，event中仅内容可变，其它均相同，为防止多次绑定该时间，可通过更改 event.triger 中更新数据</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">event.trigger = <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.title = <span class="built_in">document</span>.title;</span><br><span class="line">    <span class="keyword">this</span>.link = <span class="built_in">document</span>.location.href;</span><br><span class="line">    <span class="keyword">this</span>.imgUrl = <span class="string">'http://p3.123.sogoucdn.com/imgu/2015/05/20150511120138_306.png'</span>; </span><br><span class="line">    <span class="keyword">this</span>.desc = <span class="built_in">document</span>.title;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="图片相关API">图片相关API</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> images = &#123;</span><br><span class="line">    localId: [],</span><br><span class="line">    serverId: []</span><br><span class="line">&#125;;</span><br><span class="line">wx.chooseImage(&#123;</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> <span class="params">(res)</span> </span>&#123;</span><br><span class="line">         images.localId = res.localIds;</span><br><span class="line">         <span class="keyword">var</span> image = <span class="built_in">document</span>.createElement(<span class="string">"img"</span>);</span><br><span class="line">         image.src = res.localIds;</span><br><span class="line">         <span class="built_in">document</span>.querySelector(<span class="string">"#imageList"</span>).appendChild(image);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">wx.previewImage(&#123;</span><br><span class="line">    current: <span class="string">"http://img5.douban.com/view/photo/photo/public/p1353993776.jpg"</span>,</span><br><span class="line">    urls :  [</span><br><span class="line">            <span class="string">"http://img3.douban.com/view/photo/photo/public/p2152117150.jpg"</span>,</span><br><span class="line">            <span class="string">"http://img3.douban.com/view/photo/photo/public/p2152117150.jpg"</span></span><br><span class="line">        ]</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.uploadImage(&#123;</span><br><span class="line">    localId: images.localId[i],</span><br><span class="line">    isShowProgressTips:<span class="number">1</span>,</span><br><span class="line">    success : <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        i++;</span><br><span class="line">        images.serverId.push(res.serverId);</span><br><span class="line">        <span class="keyword">if</span>(i&lt;len)&#123;</span><br><span class="line">            upload();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    fail: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        alert(<span class="built_in">JSON</span>.stringify(res));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)  </span><br><span class="line"></span><br><span class="line">wx.downloadImage(&#123;</span><br><span class="line">    serverId: images.serverId[i],</span><br><span class="line">    isShowProgressTips: <span class="number">1</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        i++;</span><br><span class="line">        alert(res.localId);</span><br><span class="line">        <span class="keyword">if</span>(i&lt;len)&#123;</span><br><span class="line">            down();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <ol>
 <li>wx.chooseImage 选择图后，wx.uploadImage进行上传时，需保证每次只上传一张图，，应该在每次wx.uploadImage成功后的回调中再次上传下一张图片，以保证每次只传一张图，<a href="http://segmentfault.com/q/1010000002542775" target="_blank" rel="external">上传图片</a></li>
 <li>传图成功后，应记下每张图的serveceID</li>
 <li>用此ID将图从微信服务器转存到自己的服务器，微信服务器上只能临时保存3天</li>
 </ol>
-<h2 id="声音相关API">声音相关API</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">wx.startRecord();</span><br><span class="line"></span><br><span class="line">wx.stopRecord(&#123;</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        voice.localId = res.localId;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">wx.playVoice(&#123;</span><br><span class="line">    localId: voice.localId</span><br><span class="line">&#125;)</span><br><span class="line">wx.pauseVoice(&#123;</span><br><span class="line">    localId: voice.localId</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.stopVoice(&#123;</span><br><span class="line">    localId: voice.localId</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.uploadVoice(&#123;</span><br><span class="line">    localId: voice.localId,</span><br><span class="line">    isShowProgressTips: <span class="number">1</span>,</span><br><span class="line">    success:<span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        voice.serverId = res.serverId;</span><br><span class="line">        alert(<span class="string">"upload ok : serverId: "</span>+ voice.serverId)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.downloadVoice(&#123;</span><br><span class="line">    serverId: voice.serverId,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;&#125;</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//智能接口</span></span><br><span class="line"><span class="comment">//识别音频并返回识别结果接口</span></span><br><span class="line">    wx.translateVoice(&#123;</span><br><span class="line">        localId: voice.localId,</span><br><span class="line">        isShowProgressTips: <span class="number">1</span>,</span><br><span class="line">        success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">            <span class="comment">//alert(res.translateResult);</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="获取网络的状态接口">获取网络的状态接口</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wx.getNetworkType(&#123;</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> network = res.NetworkType;</span><br><span class="line">        alert(network);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="获取地理位置">获取地理位置</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">wx.getLocation(&#123;</span><br><span class="line">    timestamp: <span class="number">0</span>,</span><br><span class="line">    nonceStr: <span class="string">""</span>,</span><br><span class="line">    addrSign: <span class="string">""</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        alert(<span class="built_in">JSON</span>.stringify(res));</span><br><span class="line">        wx.openLocation(res);  <span class="comment">// 将此经纬度在地图中打开，可配名及具体地名</span></span><br><span class="line">    &#125;,</span><br><span class="line">    cancel: <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">        alert(<span class="string">"用户拒绝授权获取地理位置"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="扫一扫_返回微信处理的结果">扫一扫 返回微信处理的结果</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wx.scanQRCode(&#123;</span><br><span class="line">    desc: <span class="string">'scanQRCode desc'</span>,</span><br><span class="line">    needResult: <span class="number">1</span>,</span><br><span class="line">    scanType:[],</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        alert(res.resultStr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h2 id="菜单操作">菜单操作</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wx.hideOptionMenu();   <span class="comment">//ios上和隐藏基本按钮一致</span></span><br></pre></td></tr></table></figure>
-<h2 id="支付api暂未涉及">支付api暂未涉及</h2><h1 id="其它浏览器调用微信API的方法">其它浏览器调用微信API的方法</h1><p><a href="https://github.com/JefferyWang/nativeShare.js" target="_blank" rel="external">nativeShare</a>是一个可以通过javascript直接调用原生分享的工具, 只有少数几个浏览器可跨应用调用微信的API，这个支持度比较少(UC浏览器和QQ浏览器)，<a href="http://blog.wangjunfeng.com/demo/native_share/" target="_blank" rel="external">demo</a></p>
-<h2 id="实现方法">实现方法</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UC</span></span><br><span class="line">ucweb.startRequest(<span class="string">"shell.page_share"</span>, [title, title, url, to_app, <span class="string">""</span>, <span class="string">"@"</span> + from, <span class="string">""</span>]);<span class="comment">//高版本</span></span><br><span class="line">ucbrowser.web_share(title, title, url, to_app, <span class="string">""</span>, <span class="string">"@"</span> + from, <span class="string">''</span>);<span class="comment">//地版本</span></span><br><span class="line"><span class="comment">//QQ</span></span><br><span class="line">browser.app.share(&#123;...&#125;);<span class="comment">//高版本 http://jsapi.qq.com/get?api=app.share</span></span><br><span class="line"><span class="built_in">window</span>.qb.share(&#123;...&#125;);<span class="comment">//低版本 http://3gimg.qq.com/html5/js/qb.js</span></span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/10/22/hello-world/" class="article-date">
-  	<time datetime="2015-10-22T12:08:02.659Z" itemprop="datePublished">2015-10-22</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/22/hello-world/">hexo 使用</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+<h3 id="声音相关API">声音相关API</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">wx.startRecord();</span><br><span class="line"></span><br><span class="line">wx.stopRecord(&#123;</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        voice.localId = res.localId;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">wx.playVoice(&#123;</span><br><span class="line">    localId: voice.localId</span><br><span class="line">&#125;)</span><br><span class="line">wx.pauseVoice(&#123;</span><br><span class="line">    localId: voice.localId</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.stopVoice(&#123;</span><br><span class="line">    localId: voice.localId</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.uploadVoice(&#123;</span><br><span class="line">    localId: voice.localId,</span><br><span class="line">    isShowProgressTips: <span class="number">1</span>,</span><br><span class="line">    success:<span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        voice.serverId = res.serverId;</span><br><span class="line">        alert(<span class="string">"upload ok : serverId: "</span>+ voice.serverId)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">wx.downloadVoice(&#123;</span><br><span class="line">    serverId: voice.serverId,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="智能接口">智能接口</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//识别音频并返回识别结果接口</span></span><br><span class="line">wx.translateVoice(&#123;</span><br><span class="line">    localId: voice.localId,</span><br><span class="line">    isShowProgressTips: <span class="number">1</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        <span class="comment">//alert(res.translateResult);</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="获取网络的状态接口">获取网络的状态接口</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wx.getNetworkType(&#123;</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> network = res.NetworkType;</span><br><span class="line">        alert(network);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="获取地理位置">获取地理位置</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">wx.getLocation(&#123;</span><br><span class="line">    timestamp: <span class="number">0</span>,</span><br><span class="line">    nonceStr: <span class="string">""</span>,</span><br><span class="line">    addrSign: <span class="string">""</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        alert(<span class="built_in">JSON</span>.stringify(res));</span><br><span class="line">        wx.openLocation(res);  <span class="comment">// 将此经纬度在地图中打开，可配名及具体地名</span></span><br><span class="line">    &#125;,</span><br><span class="line">    cancel: <span class="function"><span class="keyword">function</span><span class="params">()</span></span>&#123;</span><br><span class="line">        alert(<span class="string">"用户拒绝授权获取地理位置"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="扫一扫_返回微信处理的结果">扫一扫 返回微信处理的结果</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">wx.scanQRCode(&#123;</span><br><span class="line">    desc: <span class="string">'scanQRCode desc'</span>,</span><br><span class="line">    needResult: <span class="number">1</span>,</span><br><span class="line">    scanType:[],</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span><span class="params">(res)</span></span>&#123;</span><br><span class="line">        alert(res.resultStr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h3 id="菜单操作">菜单操作</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wx.hideOptionMenu();   <span class="comment">//ios上和隐藏基本按钮一致</span></span><br></pre></td></tr></table></figure>
+<h3 id="支付api暂未涉及">支付api暂未涉及</h3><h1 id="其它浏览器调用微信API的方法">其它浏览器调用微信API的方法</h1><blockquote>
+<p><a href="https://github.com/JefferyWang/nativeShare.js" target="_blank" rel="external">nativeShare</a>是一个可以通过javascript直接调用原生分享的工具, 只有少数几个浏览器可跨应用调用微信的API，这个支持度比较少(UC浏览器和QQ浏览器)，<a href="http://blog.wangjunfeng.com/demo/native_share/" target="_blank" rel="external">demo</a><br>实现方法</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//UC</span></span><br><span class="line">ucweb.startRequest(<span class="string">"shell.page_share"</span>, [title, title, url, to_app, <span class="string">""</span>, <span class="string">"@"</span> + from, <span class="string">""</span>]);<span class="comment">//高版本</span></span><br><span class="line">ucbrowser.web_share(title, title, url, to_app, <span class="string">""</span>, <span class="string">"@"</span> + from, <span class="string">''</span>);<span class="comment">//地版本</span></span><br><span class="line"><span class="comment">//QQ</span></span><br><span class="line">browser.app.share(&#123;...&#125;);<span class="comment">//高版本 http://jsapi.qq.com/get?api=app.share</span></span><br><span class="line"><span class="built_in">window</span>.qb.share(&#123;...&#125;);<span class="comment">//低版本 http://3gimg.qq.com/html5/js/qb.js</span></span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -397,8 +260,8 @@
     <article id="post-pushState" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/22/pushState/" class="article-date">
-  	<time datetime="2015-10-22T11:14:35.413Z" itemprop="datePublished">2015-10-22</time>
+      <a href="/2015/10/30/pushState/" class="article-date">
+  	<time datetime="2015-10-30T06:13:12.496Z" itemprop="datePublished">2015-10-30</time>
 </a>
     </div>
   
@@ -407,67 +270,50 @@
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/22/pushState/">HTML5 之 pushState</a>
-    </h1>
-  
-
-      </header>
-      
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>功效</p>
-<ol>
-<li>对于单页局部更新数据,整体页面无刷—ajax</li>
-<li>到要求地址栏url跟随变动—pushState  replaceState</li>
-<li>切浏览器前进后退按钮有效—popstate   onpopstate</li>
-<li><a href="https://github.com/welefen/pjax" target="_blank" rel="external">pjax</a> <h2 id="api_形式">api 形式</h2><blockquote>
-<p>history.pushState(state, title, href);<br>history.replaceState—-参数一样<br>window.addEventListener(‘popstate’, function (e) {})</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> state = &#123;</span><br><span class="line">    title: title,<span class="comment">//部分浏览器上 跟state中的title url无关</span></span><br><span class="line">    url: options.url,</span><br><span class="line">    otherkey: othervalue</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+        <p>� �    3V �:�SY��s���z�:Dgp]��l�ӝ��qܭz�5�&amp;iHұ�#ZSV���#(�BPPV!Q�������O�/�s��t:���jv�۪�����s�=���}o{T    �T�zRV�NM��&gt;���FxN�8����迧�?�7���h9���p����τ�-�&lt;IM�����(���}�������&lt;��G�V�V���<code>�OZ�M�k�p��Q�II$ۣ���:Lkj��4��=A+��V��OC��=m,;kL�Ӄ���kވ�&#39;Z}���n��s�򅔠�$d1�Ǣu�cB���\�5}fa�,L��&lt;�Xf͜�e�Is�����9�pPЂ��� (���35��/K�4!vj5�����.c�S�����1�3�z��Pi�ui�q�+(K?���He��#j��Q�b�V    ��,��#��h �Yv0E� ��    )�_�ݼ�Kw��l����+J�</code>�����=0���k f&gt;,��i灾��g��wGY:�VFa(�)�d�ϗ�<code>MZ��[���������-�����
+�ls�(�O�{[$Cf#Ӏ&lt;*�#[#C�L�up D!C���ss}��;j����=��y=�J��͍!���E�z���9�yPL;H��b���i�kl���i/������@r �+�x����T�r�����;7�&lt;����W�O���&amp;]U��B�/�S[�G�j𜊶Q{�L�p\�!��!�#0Ls��$��Z���^l�h�������=����.ࠢt�հ4T�An��cn8�,*�h��&gt;�̈́���ǅ+�|��FJ&quot;�BK��K�7�*��YW� H��RA���v�i&gt;�
+��rO�gO&lt;
+Y��uŷ����݃Ra�ʮ�F��:�zcf    ���[*��se�c�~L&#39;l�)�F��V��.X�^֟2��Y�#8����0� m_���    ���M5�_c���[� p�2w��</code>��ܰz��:Zfn��ɱ�|ͽa�55��%� �b�����T%�k��*A¾�}��� ��e”D`�K�i���eG��WW����-���v��B�dws�����7_Y������    �^��������x.��A�O���C$8?P/����</p>
+<blockquote>
+<p>���<em>4�#I�1�6��=~��hD�N��m�O�M2gr�����=M��Zk�X��2�,5c-�]�.��=�Y+��¦3o��#nm    �ߌ��<code>�A��=[��A=��� 7S&lt;͢ �e��I��dP:���.+q�v�T6�M������^��4�-=����[��Qu֟���[԰��?8W�j����&gt;���3��z�C��@w����AQĕ���Q9�c�ݞ��3���$�+�pt�J�u�*��*H#��H��|Б3M��U</code>s��f��r��f�}lp    }&lt;ƹ<2���;0�m�s�tp�'r���r��`$���}� �="" hc��="">����z6�`�ߣ��ĕ�y�J���sA9��T�x�A���#�@���D����{��4�eov��z�v�=�&��@I�A?��-��:��Skl���9�9���y"삠�y)�+������`Or<$�gy�� vo'n��jh�(z�!�q����@x>{�������<br>Ou4�3{�+���h��z�p�v�!�    ?݆?H1͓Z��J�y�O�#�^�����NpHKͳB�~�d3N�Djb���}��+���l���<br>[v�����Kc�1����l,N�B�qw�|6j y�~���d��;с.ŀ���ϛ�ecc|D02+g�G�̴�    �M��Y�ڍ��LH��㒷<br>�g�<code>&lt;��(d���T����y�f{�o�R_v��������&#39;�yN8S�
+om�0�R���!E}Ϻ&lt;���</code>ٻ c�񰕛��h�<br>퉝���䦦ND��u���J�n,���B:�2Mn��z���q�x�]ece;/�B�4�Z�ٕx�Ȍ�{��f�h;X������� �������t3Kpk�a����AD�g�`��V�q����2����H��@yI���hTh���]� ”��$�CQqОv�ʷ�Dq1���i<br>�?�r�������ߞ</$�gy�� vo'n��jh�(z�!�q����@x></2���;0�m�s�tp�'r���r��`$���}�></em>�i��O�$ߔ�������?�斓��O����M�N�����k&lt;��{�-.<em>�”\���v�j�����’�m�;v�C�Bd�N[�R���q��Q�I��e��E3��m̟xc� d��N<br>h������ט�<code>�Xj���x�ߚC����fiq�IА��Esr�Jg��T�g�9��8lC</code>    �S���T<code>!���V��)^��}�����N��Iv���?H�&lt; |0a���{*��^smh�(n��=X�,���gXz1&#39;����y�0&quot;..B�h��,/���*+�ʘ;�b�%D��Ld��%�N�����T{KKG{�����E(����=�o��p�F �4�]���B=� ��t�Kҁ&gt;JE�����r�ܟ</code>���dzJS��a��Lc-��(Jb��Qܟc�O+I{�E1��<br>�M�|�&amp;�b�=4”0���fA�ߡ<em>�3�G�����@YB�:<br>��:�X�ӧ�y���16���Y�@6RY�ӏ%�ƌ�}M%�</em>!��w�+1�R\G.<code>C��;H��$N��9��*��v�3�����^�o7��yqw��Ѣ@�kSv��&quot;��ϑ��{@b&amp;�</code>-����M���X    A�]و��y&lt; �l<code>��J-�g�؟C�ˬQ��H�.���&amp;QM�������͕&lt;|�T5����w����C�    �i�6�C嗷�˗�Xf�B=f���HaO��4���cF��f��&quot;W��C�z �h��&quot;j� ����������*B�6&gt;F�M%�2��!)�8�
+��[zD�w�4+�cn17}�H§Q�?�l;&amp;��ʐyM�</code>}%��O^�T�{9&amp;E1��n�A�U��\”�<br>�� .</em>����Ir���I���V��5�<code>��^�Ǉ� �%ȱ�U5
+�tU�%���� UD��J9Pޑ
+������.~�g[���~�ʰ9 jh�f�k��:j�M�Y0f���ʜ��L</code>^���9?].��(��9�쌳�N��O4���,պP6�P�Ovo�o.���ϼ)ͼr���+cr��#�$U@[���Mb��&amp;W<code>�L���k*�&#39;M$!�BJ0��8p�����U �1�J.8{�����&amp;�ES��)a%Ź�P҇������ml��������O��x���PA�7�]�nۅ*:��Tt���o���d z!�*�]��ђzCRi�s������=v-�CMk��5�V��(�:����Λv�����,�@���#�{k@P5u���55�a�*�v�&quot;E�STo�1&gt;�k�P}�ߐ���9��q{jw#�    U�!K�nރIUĭB�X�ZĐ�lж��C����b��% on����S�N���p�s0�    ���VՌw�n�$�M��&amp;�����/��Av
+�~�K2U!�XE���6��+Y�Q�/�JvL�^Nh��z�2    m��T�%��������j*&amp;�Z�����^�wQ)^W}�A�{]�UG&#39;^&gt;HK *��ktQg��8�Ku��(�tǏJ�b]G��99    Ղ�49�.���\���H��������ῃӡ��j��1���D� ,����K���C_!�b�K�</code>�+����Uc5R�PV���/�+�y��rٰ��<em>    ( �.[�fͤ    N��Iat �dT��r��o�S��r<br>ޖ:&lt;䠙]6Y���aA���&gt;��A��W8;]+���<em>��1���}+(���u��![����F��’�</em><br>�OxJ��<br>s�����V�n�^H�\������TTn4�$��x�#�wC�����}�0�G�n�����</em>e�@R�&gt;<br>�L��C�V}����gES6t[6�ף[CT    J�Ê��9~M]E�n<em>���2�z��:�ە�.����Wb&lt;�?�8&gt;���b����&gt;�{cN�E�A~e”cO�t5ע�AqH}���s��N���]N��$d��}���B�����&amp;�[    K�</em>$�[Q���S�r�8Ͳ�߅��؀GI�P�2���@� OK�K��vRjS�CA&amp;K�<br>�$��JWt�����zE�+#��c��q �r��ϧq��56V�B�̯��S,�3��<br>!��M;��e㣼��S�<code>�G��9�w�~�����c��YX0�R���w�X�&gt;iC/����@�m�|V�</code>�    W��xS���w��PY;0moj+�|ľ&amp;���fE���I�?i+P�T�    v����;g�0{�����M v,J��O�Q��axy0R��f�l1�<br>��|<em>1�+f��7����ƛ!ط����H�    �?ƃ�8��<br>�W��5�aY�$�y�(ut@:��@&lt;�s�b��r���y�Xa��?�k�Fb����<br>��+�3ؼ$�;4cgg������l<code>�����9c����MZo�*���$F._v��L������}�X�L�;�x�s�6�?hȫ��C������W�{��n��֡ ������x͊���m��������Pգj�P#�����N�|����5�U�b�kJ��_m-�C$t&gt;��˞2F��ƟDQ�]��</code>K���ʭRpzg���3��-�!&amp;��ۏ”<em>�U#jCYTF������N�����}�r����G��M�������@��ω����~�����zD��ݩ��”Kz”R �r�    ±�Ϭ��q9i��ʰ<br>�-@�Xٻ�O54��K��c�p�m�$��    :g�/�ߨ~�Ȓ�d����4�=�Ғ�X��8t3ۃqkv�n�|P�0�e�s,���.��E��P    ���0� �]U�^��e���_No:�R�.$&lt;����;��x��<br>W\��6�<br>��=w�q�j</em>�����±c��1$������걛���������”��fi�ccf���a�q�/�~����=�Z�R�%�&gt;���=tV[X�ˍ�q1s�6��<br>2I��2�i|ؽE<br>�V����y�7� �Y~J��6���u������|�� H��1�vw1Bs9����ǋo����%��B�񬱴CxPh&lt;w0��@�N�ͦ3 I��H’����qw�`X<br>�,��n��必G@<br>������U��g�Ic����ai�!,���6)����q7$T+���5��%Km���H�%4ITM���Q !�C{�Y����!�.</em>�!A�6���Y����P/�����<code>�7�� �&#39;�d�E #�</code>��QȚ�x�<em>;�,�    �r��W��-vϸU<br>�eWPܟe��~���n+!3��<br>t’�|V0VF�����՜�����&gt;q; �”#�t y����X��ޘ���W*j@J���-�o�}��&lt;������z��Ù�,�������-�l,<br>�H-;x`,?������9��������p-��</em>���I<q�v�i����������ޕ�s���}�#��j�l��982�d$�)c��c(":���(c2dƒ1�m�l�)�2$%���{�cu�����=��������l�^k�kx׻����ߵwtǌ44,��d�\pe&��`| u�,�="" y�)`��b�(="" c��q�="" ���\�8�rbi<�w="" �f="" �(�aie�ّ<}|}����5���="" o�p]��:\s[�bs��8"���s��,�v�[�="" 1�v�a="" ����p0~q����m�v="" i�-n� cׇ2j�n#�*����i?і g*b��:��j���p�������d�hc�hv,�3��jpn�a�wtu��d8,%�y����o�p8�[�p���zj�8xw���89x�b&)��0ca!�ʺx?oo'���7�<-o���="" �alp��p�e0!n4="" �="">��Čpč��Sj�P�@���5��N�K�&�N(��[�Q�C{ ��<�c.ĵ�\ �ڡ� �æ"�c��z)�f0="" @�a�hm��y�="��hh" (�#�*�p="" �xe9,�vòhyuؽ�����rfb�am��8���="" y���̍�="" ]�\��y�zշ��ґ���,c�b="" �,j�(����od��k=";X~r8��2V)�P<7�/z���?�����)�Z�l���}�)�hS{" ���8���������0�="" ���s���="" l����o="�" �����\;ey%y,a�nq�="" z�\�4�h,f�¶;���|���%bwc�i��[|�h��p �.�ڞ�`������֜�yx�hy\�7�m�ѓ�#="" ���="" �0h%�k="" �z��!�umū��emb���g��qc�dje8p��;��9rr="" ���p����m��ol��)pd�kʡ���,�{�ir�f���b)�����x9j������.i��]-���tny��{*���h�����="" ������[ڑ��+,�ʐ��r�wc�="�J��,R��*-���������R{�wM�-O�|���'L�=Ci������d� " z="" �.o��f="98�@" ��t���\��="" ݴ��ٗrhk��n��="" �<\ܾ="" �rrk�u�&j��="!������d�4�RP���,��ﶸ�/�%�/.">����O�������8�,����r�0�/�������׋�/����9Yy&lt;���<br>Xy� ��AV��E�  @�  @�  @�  @�  @�  @� �\�������’��?<br>8� �����������������/‘����i���w����W��������8Y�,r��W<code>���_�=
+��
+�ЗB��e����S��c�������D����0�A/�</code>1�����C�<br>��7�&gt;���MO(i�o0.&amp; P���<code>O�3��w�  �8t���M ��������    �QO��\�B��t��+�s
+p�^��tケ��8��(����,�9a]���&quot;��������ᚼ���3=z�va��7?AY�ohFzb�T)m����_��x��dΐ\KZ�!�Qu�$j��ʪ���=��$,輋�VXU�=���H�~c#Ѡ���S&gt;����&lt;;�Y=3SM��k����dV�ѻ����}���N���l�%�G�ÈЪ,^����ٳ�����&amp;.Mه�dm���3��;�L&lt;�$ݚ4�5�G��5��X&gt;|�o�]� fet�⹄�N�V��uZ��[��hm���|2�y
+�t</code>�H]��{�F����1���ݕZ۞�    j��S��E=�g8:�cr����n��̵�j�=�~ezƜf�    ��|ŷQ�s��h9��”�’�n��Q    ���}�L�{��]��I���U�    �/x�%17�PA���ى��f�”‘��)���$;1<br>����X-�”��!�����{��77څ��d��H<em>D�9�-C����-N���`6=�”p��6����no_c</em>m�Z\�-�����<br>����<em>1��WUNݹb5ɇr�f��n�����G��!�8�؅]���t+wl��yT������”A���fC&lt;z�e�:S��}��j�w�pi��抭�#&gt;�]Y</em>hw\c b&lt;����J��(����I+�鴹[�nP��ù�<em>t8�”G��jϿ�M߬����”Z|w���f�Me��.}l�����1�C#v���aѨ���Z���,����M��8�H6c��’wu���,6��j�^���<em>�˜l����t��Eʧ݆�̼�4���”�u�[��2Ug�K?��yj��O��s!�:&gt;��[�$��<br>�1J�apf���Ы�o��-ab’t�t�j�i֪O�2��^H�����l�+�f�ɐ$���    �v��j���Ѽ�̘���ֻ�0��SUV�rS��B�”L��A!�</em>L]��xW�$��N����#�S<em><br>؃������D�    �=cr���a�ξ�b�����]����_K!^f8?�Ԓ<code>���36o}��נқ�|���iЊ���m&amp;��63pi�ߺ+�rRT�֊y���������c��(�]�5/��j�I��\7��2.c�
+��Xa�+�c�u���%wי�#޿Y�b��ЙW󹆖�l+�8,uo�c�3ǘEl��t|�QP������y|5cv�
+VF�G�i��6U%�s�a�CW��=�]���M�s ��Y�P�f����R�Ů��)�
+��(�&lt;u��[�O%
+K��Ո5ݣ�U�w����&quot;gG��l8�J����zp�����ԧV9�ߐ��E�-���K����N{����:�Y��f��Φ�+������&#39;Z/�kf�a���-b�f�&quot;�X��VH&#39;�yg�nb����� �vF�?������wg��¸�qV�Xy���|����f�iH1}�1:}�F��^ -F+��sr�i�,9#���&#39;��D����B��[A�eG��o2�&amp;�&gt;2��2PF̥����#��B����2NR�9��w�b;6��� �&#39;��e��f��
+��l���&gt;��</code>���;����T�Q���dB1�nG�g�\��qm��� ����d;���H�Wt}�]�/�ץ    �RWʭ�i�’Q\9�@�:������/ Y6���u4��J�C���F’�nzr��=;,�!;K�����fs�ey�z���g@x&amp;��c�S��f��K�Uƒ1<br>v������l^��Y�]����H���7����ד��?]56利6 ����Dc�    ��}��<code>��&amp;</code></em>�i�*)Y���v�T�.�c7��v,���Ԁ��c��UF�H�l)��_9�`���W�=�ssg�C2p(΂�3ݡ9��T��A󰁎�v��]诞����d��d��’�����C��</em>������&gt;������9    ��zV[-̹����kxi����m<code>�e3ٕZ�$jd��r�5�t���f�X���&amp;�K��91
+���Q8�;fC�^�7��=�TKHg�HJFr��ɹɚ�~��zGVe(^Rr�������֜��.N�g����$����n|��Q��n:H# �{U��%�r�C��t)ǗU!�_L7�}��s��
+7���~�/2;&#39;d��֍��8����sc��49��͂�_{q8Ck&lt;z�o���C���b$���X����92�Ƽ�q��W^�%%3�2Nk8��&#39;z�Ƀp�uiB6&#39;w鈍�g]�D������3����ڭ&lt;S�lB)pn�~F����&gt;��g���B[o����I�ő��7�D��s�;����S�0;��[��8x�q��Vºh��iFSW����d�geZc�/=�� d�</code>e�0�h��x�&amp;-mo<code>���}Ugy���W��F���U؄g������s�X��U6W�K�I�(�:��p�c\����̏����^�T���fǘ�������u4�v�j�����]skr�&lt;�^�|��s���U���.&lt;HH췂�u/������Gt��$���&amp;3�a����GZ�߮�➒�՜�/&lt;���&amp;��x��Y�5}�/*g.��&#39;彖ރ�V�&amp;���߬��QE     ��*�?�t�����
+��Y��𵝉F�gr����x����\+X;z��Z��+��Uq�N�wX���β��Mٮl;Z���pw���7��q�*�s�� j�|ޏLs��L�W_H�XE��u���</code>1�esb\vooPi� ?�<em>A�eQD�%�v������;���[1Y{��n��|��.sw�x|J��}�J�)��}]��HX�8W�{p&lt;������.$��XyNI.Q^�]㘃e���S���y��Vv���Zn�<em>[�@ S+Fb��ԅ/�ݸ��5_7�r2��-�[��K�q�8����q�����</em>��D��q��y<a href="&#109;&#x61;&#105;&#x6c;&#116;&#111;&#x3a;&#xfffd;&#xfffd;&#127;&#x5;&#126;&#xfffd;&#xfffd;&#65533;&#xfffd;&#5;&#xfffd;&#65533;&#xfffd;&#65533;&#xfffd;&#xfffd;&#x1;&#65533;&#xfffd;&#xfffd;&#x5f;&#65533;&#64;&#93;&#xfffd;&#x13;&#65533;&#65533;&#xfffd;&#x1f;&#8;&#x4c;&#102;&#x7bf;&#112;&#xfffd;&#xfffd;&#65533;&#97;&#xfffd;&#x7a;&#xfffd;&#xfffd;&#65533;&#49;&#x7;&#xfffd;&#xfffd;&#85;&#5;&#x4f;">&#xfffd;&#xfffd;&#127;&#x5;&#126;&#xfffd;&#xfffd;&#65533;&#xfffd;&#5;&#xfffd;&#65533;&#xfffd;&#65533;&#xfffd;&#xfffd;&#x1;&#65533;&#xfffd;&#xfffd;&#x5f;&#65533;&#64;&#93;&#xfffd;&#x13;&#65533;&#65533;&#xfffd;&#x1f;&#8;&#x4c;&#102;&#x7bf;&#112;&#xfffd;&#xfffd;&#65533;&#97;&#xfffd;&#x7a;&#xfffd;&#xfffd;&#65533;&#49;&#x7;&#xfffd;&#xfffd;&#85;&#5;&#x4f;</a>�pɦn��{o�������<br>��r�xَK[�1�]���^,,1L��!L,��i~&amp;�����ٗ���N�srxΔU”��6��&lt;�͙����ٴl^�(m~�����?�Ŷw���~&amp;�+</em>�/yv�S׹<br>��Z��U�����C�F�������&amp;Ar�����)���!G���۲��dQ�R+�7�u�%�w<br>\4���h,J�:w�V��뜀gƋ�P�WN����gn�k+�V���wO�I5ѽs.&gt;{������~s�Y�’��F/����ױ��+��L��    k��$���3.U�<code>?ϴ�ć͵�S�
+�)�(k���4�&quot;W֫3    7��@���#�pH��r���CԤ��l���dm�H7����&#39;7d�mX*�3��p�| �d��ǯ�z�z^�?��_��y8T���{�2ֆ,�
+i�W��K����0�&quot;�#���#��vYFHE�BY�!d_J��H��dI�M���\������\�s=��oι�9������&gt;g�ڨ�tTr��iG�y�M�4&#39;���_uLe��cCuk��T���GI��f+��C��k������9ΐ��&#39;m\�8^\�x���+��Xu�q^���.��O΁ G��q�;��m�D(g�kY�2ϩ��X����!��a��%�</code>�d&amp;��ފ���3؅�<br>��WV�Ꮯ�+�Ԝ�~��j�\�P�DM;Mia���AD�-�<em>�%</em>{��a�S$Tf�X��Vf.ɪ�b��.���q��S�l��s���<code>%&lt;;��l
+�����q��$ِG0K�#e� �ZQ�C�j�}�l8����zzv���a�X3z��af�C��bM�����&#39;����[,����hmH�^����]^e���&amp;(��?�͏
+���Q���Gn����(r��b���dop[ ����9I��9��&#39;7�?��[P���ݵ��.o�7�~�LW*��i���ey=�\��0�K.��𝔝D_ݣ�~V��cc���7?o��J4�{��x�&gt;�HVr����G���Q����$�5g�&amp;I�@���Kݎ�EGK( �-(_Qq�bb��t���u��{���6J��i�����ه�n}3{Wb����=�8#V��h�ӊ/�sh�Or�/����l%���?A���ڭ.�rޗq� EUG
+��V��m���
+r�I�r�Vg��(Ӛ�s�X��A�@��O�x�&lt;����/�A ̮&lt;�8�[x�J�%9E.핹�WMF&lt;�Ӡ���
+��&amp;S
+������4�#:2�eˬ��je&#39;#=��|Ư^vbv���G5��7e/�#��&#39;|�ۙ�b�ŧI��u�J�F�&gt;�tT|���^��Ѓ�f
+���3�.�n��bSU�?4���Q�n���C��*��A��De�|{���)��2mr�����7���ݤ���K�-�i������R��1V�78cq|ЎB�Rn���RNl��v�K4�O���[$fZ�9
+�șO
+�K��j��@G7�&amp;�x��V��-}���&amp;Ȁt5ݒ��@���
+�
+U�V����.e�Q쒹�b˞t
+2x.=���y��������n&amp;W�Gg��Q�������E��9�^����&amp;�-�q�٦�Q�{$
+�u$#m�|���o�?7�%�R�UO$1h=�H�~VǞ� \�������O�p�� !�Y]�yZS���!�����v�i�N�PO��6!��2�&gt;�l���*�C�ZR�&#39;�_���J�,��0���p�K�)�R�l�/��&lt;;�d�~��)G�P���#�Qbk�&amp;�Y��!��v����Vḽ R�!=䛥�
+V��ѧ(��k���&lt;WҚ(�4�)1����o�&lt;�נ�Sf���4�-j�l?h �i(K�[e(����i�&amp;VY_����|�/NO�N�\����1D{?T�J������@�|����q�4&lt;iZ    f��</code>x�������,�    };��<wo����� ���u���������g��al��="" f�f�#�pf��������4�ϲ�%�]^d�dƌg����l="" ܹs�@8 ���j�9��ǟ��y!�?v�pv^tͧvcg��u�u^�="" ���[$b��k�%������="">%d�����5lr�Zǰ&amp;�� Jj=Y;F9�Z(�� �<br>h^~Q���1\Y<br>���������u�!�i�<br>��Wg9��E�7�[���<em>�sм�����i�?v�_T.�I5��M���l4�K�,~��!p�e�;6n��B����QI�𫱾�C��Ne���h�l�U38r�”)�C�I</em>W��z3H<em>�Ӓ���;��y�z��%Yn�S�[�    ���O��FUC�u�A��-�Ʊ��\=’�:,�h�ւ�C�����W�a� ��󂌲�lj��S��8���۫����r��uv�k�d���P������<br>����(?˓~$&gt;�)b�ˣ�V�4<br>4�$��#{(���^��<br>��Q�ב��’�]�INL��7E�_[�?M�n~</em>�.���V$;(2����|�X<em>��&lt;��i�K��(����m�R�e��U�ٞCjմ����.,یm~9^t~o���V�!��S[}�9q��Z�����CC4�+�3O����X’�X��y�}-�4���U+����f3&lt;`��l�)@Q��+�2��gp�Y��R9H�<br>�</em>�W��E��%$9�Z���# �zG�”�s    �]_�K�g������@�~ֽ�������)g���H������;��z@���vP2#��<em>,|űp��9����4�,@a�;�ţ8��7&lt;n��١J�A�nG!=Yb���#Ot�’�L+ d#���    N�ޖT�6�+��˸9����J~��˦��Q�������L���&lt;c3Z���`�����\��5T�-�e��ￚ!:���y�Am�K�e��3�ە�1PٲH�����s�%Nt�”=�qr$}^4��iS�[�J�R[P����o��ȟ��J/��2&gt;-����ύ�’����+�&amp;9��-mRb)�ךt�d��<br>��MY�L��F���,&amp;R�kݷ��j�zeM�n]=]sB���c�8����a|�����b��bEB�=’#��’��3�}��</em>G�ż5���’���Lw@/��6�az/W�{/����މ��Oӥ3U ����j�9�kI�HU���&gt;�����3�<br>��1��6��:Zʋ�er;+���#I&amp;��D�5�a�l!I6�z���C��&gt;�0�tm��%�ݢO����8��ۥԶ�j�\���7��h*=�h�H�0Y��h8!M��p���yFי����P”B�c�E�B6�y����u��g:m�paNjP��˳�K�$^.��hK����fb�3Vz�wWg����I<br>0��ɔ/��S�Y�Ҹ�O�����&gt;1�v����m�Ij�f���&lt;�W����e���N��]4d��UD��aEr���;l�)i�kf忡<code>wL��3�օl�] ���~��N�zL�e���,BlyL���.p��~�}@J��u��Ӭ    ļ�
+�F���A�%��p��c Y��z;�p���|��t�����.��:����/�V�bX�9q7.�iv</code>=��g��}h’�NI��hH콇�A�tLԺ˟�<br>�x|Z    �r�)����y��Z�`d�KTb!_4������.���Q�0j��k�����g��x5�Xt:�D��=��2)�.�+[e�v-T��܋��s�{�2’@��Y�9�!��Q    ���#/|�&gt;[���2/5��i��������f�U�T��Ƽ��q���p���:R{hu�d�ܛ��{�2�R}X�D<br>Q&amp;[<br>Cyrދ�{e���$��eQ׽��”3o�L낕�D����ș”������xǃ�������t�    �䅣�����{��5O�����G����{‘�ص�#wF������������#0��/�����))�^�� ����������</wo�����></�c.ĵ�\></q�v�i����������ޕ�s���}�#��j�l��982�d$�)c��c(":���(c2dƒ1�m�l�)�2$%���{�cu�����=��������l�^k�kx׻����ߵwtǌ44,��d�\pe&��`|></p>
 </blockquote>
-</li>
-</ol>
-<h2 id="使用">使用</h2><ol>
-<li>pushState 可将设置当前地址框url ,title, 并将当前用以渲染的数据塞入history供前进后退时重新render时使用</li>
-<li>replaceState 同上，不同的是是替换信息，可用作初次渲染使用，从而可回退到首屏，并作为当前窗口的历史第一屏</li>
-<li>对于前进后退按钮，通过绑定popstate事件，获取当时塞入的数据重新渲染即可<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.addEventListener(<span class="string">'popstate'</span>, <span class="function"><span class="keyword">function</span> <span class="params">(e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(e.state)&#123;</span><br><span class="line">        render(e.state);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="无能为力的事"><strong>无能为力的事</strong></h2><p>1、设置的url无法跨域<br>2、存在history中的数据state, 其各个字段的值只能是字符串，不能时对象，state本身属性可多个（任意）</p>
-<h2 id="浏览器兼容性">浏览器兼容性</h2><table>
-<thead>
-<tr>
-<th>Feature</th>
-<th>Chrome</th>
-<th>Firefox (Gecko)</th>
-<th>Internet Explorer</th>
-<th>Opera</th>
-<th>Safari</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>replaceState, pushState</td>
-<td>5</td>
-<td>4.0 (2.0)</td>
-<td>10</td>
-<td>11.50</td>
-<td>5.0</td>
-</tr>
-<tr>
-<td>history.state</td>
-<td>18</td>
-<td>4.0(2.0)</td>
-<td>10</td>
-<td>11.50</td>
-<td>6.0</td>
-</tr>
-</tbody>
-</table>
+<p>��]�<br>�A� �  </p>
 
       
     </div>
@@ -492,11 +338,11 @@
 
 
   
-    <article id="post-hexo-install" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-welcome" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/10/hexo-install/" class="article-date">
-  	<time datetime="2015-10-10T08:50:39.539Z" itemprop="datePublished">2015-10-10</time>
+      <a href="/2015/10/30/welcome/" class="article-date">
+  	<time datetime="2015-10-30T06:13:12.496Z" itemprop="datePublished">2015-10-30</time>
 </a>
     </div>
   
@@ -505,33 +351,137 @@
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/10/10/hexo-install/">hexo 安装</a>
-    </h1>
-  
-
-      </header>
+    <div class="article-entry" itemprop="articleBody">
       
+        <!--
+author: jockchou
+head: http://pingodata.qiniudn.com/jockchou-avatar.jpg
+date: 2015-07-31
+title: 欢迎使用GitBlog
+tags: GitBlog
+images: http://pingodata.qiniudn.com/cube2.jpg
+category: GitBlog
+status: publish
+summary: GitBlog是一个简单易用的Markdown博客系统，它不需要数据库，没有管理后台功能，更新博客只需要添加你写好的Markdown文件即可。
+-->
+<h2 id="一-_简介">一. 简介</h2><p>GitBlog是一个简单易用的Markdown博客系统，它不需要数据库，没有管理后台功能，更新博客只需要添加你写好的Markdown文件即可。它摆脱了在线编辑器排版困难，无法实时预览的缺点，一切都交给Markdown来完成，一篇博客就是一个Markdown文件。同时也支持评论，代码高亮，数学公式，页面PV统计等常用功能。GitBlog提供了不同的主题样式，你可以根据自己的喜好配置，如果你想自己制作博客主题，也是非常容易的。GitBlog还支持整站静态导出，你完全可以导出整站静态网页部署到Github Pages。</p>
+<h2 id="二-_功能特点">二. 功能特点</h2><ol>
+<li>使用Markdown  </li>
+<li>评论框  </li>
+<li>代码高亮  </li>
+<li>PV统计  </li>
+<li>Latex数学公式  </li>
+<li>自制主题  </li>
+<li>响应式  </li>
+<li>全站静态导出  </li>
+<li>良好的SEO  </li>
+</ol>
+<h2 id="三-_GitBlog优势">三. GitBlog优势</h2><ol>
+<li>无需数据库，系统更轻量，移植更方便  </li>
+<li>使用Markdown编写，摆脱后台编辑排版困难，无法实时预览的缺点  </li>
+<li>可全站静态导出  </li>
+<li>配置灵活，可自由开关某些功能  </li>
+<li>多主题支持，可自制主题  </li>
+<li>博客，分类，标签，归档  </li>
+</ol>
+<h2 id="四-_环境要求">四. 环境要求</h2><p>PHP 5.2.4+</p>
+<h2 id="五-_安装步骤">五. 安装步骤</h2><ol>
+<li>下载GitBlog源代码  </li>
+<li>解压上传到你的PHP网站根目录  </li>
+<li>打开浏览器，访问网站首页  </li>
+<li>上传Markdown文件到<code>posts</code>文件夹  </li>
+</ol>
+<h2 id="六-_详细说明">六. 详细说明</h2><p><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/install.html" target="_blank" rel="external">1. 安装</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/struct.html" target="_blank" rel="external">2. 目录结构</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/config.html" target="_blank" rel="external">3. 配置说明</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/edit.html" target="_blank" rel="external">4. 编写博客</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/other-func.html" target="_blank" rel="external">5. 评论，订阅，统计等</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/cache.html" target="_blank" rel="external">6. 缓存机制</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/export.html" target="_blank" rel="external">7. 全站静态导出</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/theme.html" target="_blank" rel="external">8. 主题制作</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/nginx.html" target="_blank" rel="external">9. 在Nginx上运行GitBlog</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/apache.html" target="_blank" rel="external">10. 在Apache上运行GitBlog</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/sae.html" target="_blank" rel="external">11. 在SAE上运行GitBlog</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/github-pages.html" target="_blank" rel="external">12. 使用GitBlog和Github Pages搭建博客</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/update.html" target="_blank" rel="external">13. Gitblog升级</a><br><a href="http://gitblogdoc.sinaapp.com/blog/gitblog/wordpress.html" target="_blank" rel="external">14. 从wordpress导入</a></p>
+<h2 id="七-_问题及bug反馈">七. 问题及bug反馈</h2><p>如果在实际使用过程中对GitBlog有新的功能需求，或者在使用GitBlog的过程中发现了Bug，欢迎反馈给我。可以直接在Github上提交，也可以发邮件至<code>164068300[AT]qq.com</code>与我取得联系，我将及时回复。如果你自己制作了漂亮好用的主题，也非常欢迎你提交给我，我会在这里展示你的主题链接。如果你正在使用GitBlog，也可以告诉我，我将也会在这里列出使用者名单。如果你想和其他GitBlog使用者讨论交流，欢迎加入QQ群<code>84692078</code>。</p>
+<h2 id="八-_使用者列表">八. 使用者列表</h2><ul>
+<li><a href="http://blog.hiweeds.net" target="_blank" rel="external">Weeds</a></li>
+<li><a href="http://xiaochengzi.sinaapp.com" target="_blank" rel="external">橙子</a></li>
+<li><a href="http://jockchou.gitblog.cn" target="_blank" rel="external">jockchou</a></li>
+<li><a href="http://gitblogdoc.sinaapp.com" target="_blank" rel="external">GitBlog Doc</a></li>
+<li><a href="http://zxy.link" target="_blank" rel="external">zxy</a>  </li>
+</ul>
+<h2 id="九-_感谢">九. 感谢</h2><p>GitBlog的成长需要喜欢Markdown，喜欢写博客的各位亲们支持！感谢你们使用GitBlog，感激你们对Gitblog的良好建议与Bug反馈。</p>
+<p>QQ群：<code>84692078</code><br>作者邮箱：<code>164068300[AT]qq.com</code>    </p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-requirejs" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2015/10/30/requirejs/" class="article-date">
+  	<time datetime="2015-10-30T06:13:12.496Z" itemprop="datePublished">2015-10-30</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="steps">steps</h2><ol>
-<li>必须有的环境： node, mpm, hexo</li>
-<li>mkdir demo</li>
-<li>cd demo, hexo init</li>
-<li>npm install</li>
-<li>在source&gt;_posts下写自己的内容，md文件</li>
-<li>hexo g  编译md -&gt; html</li>
-<li>hexo d  发布</li>
-<li><a href="http://segmentfault.com/a/1190000002538363" target="_blank" rel="external">参考</a></li>
-</ol>
-<h2 id="文档结构">文档结构</h2><p>├── _config.yml #配置文件，包括git配置在内<br>├── db.json<br>├── node_modules<br>│   ├── hexo<br>│   ├── hexo-deployer-git<br>│   ├── hexo-generator-archive<br>│   ├── hexo-generator-category<br>│   ├── hexo-generator-index<br>│   ├── hexo-generator-tag<br>│   ├── hexo-renderer-ejs<br>│   ├── hexo-renderer-marked<br>│   ├── hexo-renderer-stylus<br>│   └── hexo-server<br>├── package.json<br>├── public #编译成的html文档<br>│   ├── 2015<br>│   ├── archives<br>│   ├── css<br>│   ├── fancybox<br>│   ├── index.html<br>│   └── js<br>├── scaffolds<br>│   ├── draft.md<br>│   ├── page.md<br>│   └── post.md<br>├── source<br>│   └── _posts#个人编辑的md原始文档<br>└── themes<br>    └── landscape</p>
-<h3 id="安装hexo期间的一些问题">安装hexo期间的一些问题</h3><blockquote>
-<p>hexo 版本为3.0后，hexo d 命令下可能出现 ERROR Deployer not found: git<br>解决办法：npm install hexo-deployer-git —save</p>
+        <!--
+title: requireJs 笔记
+tags: requirejs
+status: publish
+date: 2015-10-20
+category: JS
+-->
+<p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
+<h1 id="代码组织结构">代码组织结构</h1><blockquote>
+<p>在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
 </blockquote>
+<h1 id="page_入口文件">page 入口文件</h1><h2 id="requirejs_config">requirejs config</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>.config(&#123;</span><br><span class="line">    baseUrl: <span class="string">'/mjs/'</span>,</span><br><span class="line">    urlArgs: <span class="string">'v='</span> + ver,</span><br><span class="line">    paths: &#123;</span><br><span class="line">        jquery: <span class="string">'lib/jquery'</span>,</span><br><span class="line">        storage:<span class="string">'lib/jquery.storageapi.min'</span>,</span><br><span class="line">        cookie:<span class="string">'lib/jquery.cookie'</span></span><br><span class="line">    &#125;,</span><br><span class="line">    shim: &#123;</span><br><span class="line">        <span class="string">'lib/iscroll'</span>: &#123;</span><br><span class="line">            exports: <span class="string">'IScroll'</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    config: &#123;</span><br><span class="line">        <span class="string">'module/getMore'</span>: &#123;</span><br><span class="line">            total: <span class="number">15</span></span><br><span class="line">        &#125;    </span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="config详解">config详解</h2><ul>
+<li>所有模块，依赖都默认为是js,无需加上.js后缀</li>
+<li>config需在入口处，保证先执行，也可写在html中</li>
+<li>paths 映射不直接放置在baseUrl下的模块名，一般相对路径，之后，可用映射名代替这一模块，一般用以映射lib库, 映射对象也可是绝对路径，或者完整URL(with https?)</li>
+<li>shim  可将非AMD规范的依赖规范化，之后，每项可直接作为依赖直接使用了, 。每项包含3个参数：</li>
+</ul>
+<ol>
+<li>exports可将这一依赖注入到全局中，作为全局变量</li>
+<li>deps:[该依赖的依赖列表]，其依赖在配置时并未加载，只有当改依赖需要被载入时</li>
+<li>init: construct function + 解决变量冲突的问题(由于不符合AMD规范的库可能使用相同的全局变量，从而引起冲突，一般是通过第三方依赖的noConflict方法实现)</li>
+</ol>
+<ul>
+<li>map 用以进行版本映射，以在不同页面中使用不同的依赖版本，一般用不着，谁没事弄几个版本的代码一起用啊</li>
+<li>config 应用级的参数传递，用以向模块(modules中的文件)传递参数，应用级，即不同的页面调用相同的子模块实现不同的效果，向子模块传递参数，每一项是一个模块，以及该模块需使用的参数,如，在 模块getMore中，可使用module.config().total获取该参数</li>
+<li>其他，packages(引入包，其住模块为index.js)，urlArgs, scriptType…</li>
+</ul>
+<h2 id="packages_模块加载">packages 模块加载</h2><blockquote>
+<p>??? 待续</p>
+</blockquote>
+<h2 id="requirejs_入口">requirejs 入口</h2><p>require( [module list], function( module ) {} ) 其中，各个模块载入的顺序和参数一致</p>
+<h1 id="模块">模块</h1><h2 id="创建模块">创建模块</h2><blockquote>
+<p>module中，每个文件作为一个模块，每个模块是个大的闭包，可以防止变量污染</p>
+<p>两种创建方式,第一种方式中，depslist 可缺省，此时无依赖 第二种方式中，require也作为一个依赖注入到模块中</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define([deps list], <span class="function"><span class="keyword">function</span><span class="params">(deps name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;);</span><br><span class="line">define(<span class="function"><span class="keyword">function</span><span class="params">(require, exports, module)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> depsA = <span class="built_in">require</span>(<span class="string">'a'</span>);</span><br><span class="line">    exports = obj;</span><br><span class="line">    or</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<h1 id="其它">其它</h1><blockquote>
+<p>测试模块时，可通过 require(“module/name”).func() 来调用某个对外方法测试(前提是，该模块已经载入了)<br>jsonp服务依赖 callback=define !!!</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">"http://example.com/api/data.json?callback=define"</span>],</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">(data)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//The data object will be the API response for the</span></span><br><span class="line">    <span class="comment">//JSONP data call.</span></span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
       
     </div>

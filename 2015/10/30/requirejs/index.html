@@ -3,23 +3,44 @@
 <head>
   <meta charset="utf-8">
   
-  <title>require 笔记 | My Blog</title>
+  <title>My Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="官方文档
+  <meta name="description" content="&amp;lt;!--
+title: requireJs 笔记
+tags: requirejs
+status: publish
+date: 2015-10-20
+category: JS
+--&amp;gt;
+官方文档
 代码组织结构
-在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用module为针对每个功能开发的模块">
+在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.require.js是所有页面js的入口， data">
 <meta property="og:type" content="article">
-<meta property="og:title" content="require 笔记">
-<meta property="og:url" content="youngsh.github.io/2015/10/23/requirejs/index.html">
+<meta property="og:title" content="My Blog">
+<meta property="og:url" content="youngsh.github.io/2015/10/30/requirejs/index.html">
 <meta property="og:site_name" content="My Blog">
-<meta property="og:description" content="官方文档
+<meta property="og:description" content="&amp;lt;!--
+title: requireJs 笔记
+tags: requirejs
+status: publish
+date: 2015-10-20
+category: JS
+--&amp;gt;
+官方文档
 代码组织结构
-在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用module为针对每个功能开发的模块">
+在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.require.js是所有页面js的入口， data">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="require 笔记">
-<meta name="twitter:description" content="官方文档
+<meta name="twitter:title" content="My Blog">
+<meta name="twitter:description" content="&amp;lt;!--
+title: requireJs 笔记
+tags: requirejs
+status: publish
+date: 2015-10-20
+category: JS
+--&amp;gt;
+官方文档
 代码组织结构
-在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用module为针对每个功能开发的模块">
+在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.require.js是所有页面js的入口， data">
   
   
     <link rel="icon" href="/favicon.png">
@@ -189,8 +210,8 @@
       <div class="body-wrap"><article id="post-requirejs" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2015/10/23/requirejs/" class="article-date">
-  	<time datetime="2015-10-23T03:22:42.383Z" itemprop="datePublished">2015-10-23</time>
+      <a href="/2015/10/30/requirejs/" class="article-date">
+  	<time datetime="2015-10-30T06:13:12.496Z" itemprop="datePublished">2015-10-30</time>
 </a>
     </div>
   
@@ -199,27 +220,16 @@
       <input type="hidden" class="isFancy" />
     
     
-      <header class="article-header">
-        
-  
-    <h1 class="article-title" itemprop="name">
-      require 笔记
-    </h1>
-  
-
-      </header>
-      
-      <div class="article-info article-info-post">
-        
-        
-
-        <div class="clearfix"></div>
-      </div>
-      
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
+        <!--
+title: requireJs 笔记
+tags: requirejs
+status: publish
+date: 2015-10-20
+category: JS
+-->
+<p><a href="http://www.requirejs.org/docs/api.html" target="_blank" rel="external">官方文档</a></p>
 <h1 id="代码组织结构">代码组织结构</h1><blockquote>
 <p>在相应的html中通过 script data-main=”js/page/app.js” src=”js/require.js” 引入代码.<br>require.js是所有页面js的入口， data-main对应的才是该页面真实的js入口<br>js目录结构中，page中为每个页面对应的入口，每个页面相当于是一个应用，这些入口js是应用级的，不可复用<br>module为针对每个功能开发的模块，requirejs的模板就是鼓励代码模块化<br>lib为按需载入的各个第三方库，如jqurey,等<br>原则：尽量模块化，高复用，全局变量要尽量少</p>
 </blockquote>
@@ -246,11 +256,13 @@
 <h2 id="requirejs_入口">requirejs 入口</h2><p>require( [module list], function( module ) {} ) 其中，各个模块载入的顺序和参数一致</p>
 <h1 id="模块">模块</h1><h2 id="创建模块">创建模块</h2><blockquote>
 <p>module中，每个文件作为一个模块，每个模块是个大的闭包，可以防止变量污染</p>
-<p>两种创建方式,第一种方式中，depslist 可缺省，此时无依赖 第二种方式中，require也作为一个依赖注入到模块中<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define([deps list], <span class="function"><span class="keyword">function</span><span class="params">(deps name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;);</span><br><span class="line">define(<span class="function"><span class="keyword">function</span><span class="params">(require, exports, module)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> depsA = <span class="built_in">require</span>(<span class="string">'a'</span>);</span><br><span class="line">    exports = obj;</span><br><span class="line">    or</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">    &#125;)</span><br></pre></td></tr></table></figure></p>
+<p>两种创建方式,第一种方式中，depslist 可缺省，此时无依赖 第二种方式中，require也作为一个依赖注入到模块中</p>
 </blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">define([deps list], <span class="function"><span class="keyword">function</span><span class="params">(deps name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;);</span><br><span class="line">define(<span class="function"><span class="keyword">function</span><span class="params">(require, exports, module)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> depsA = <span class="built_in">require</span>(<span class="string">'a'</span>);</span><br><span class="line">    exports = obj;</span><br><span class="line">    or</span><br><span class="line">    <span class="keyword">return</span> obj;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <h1 id="其它">其它</h1><blockquote>
-<p>测试模块时，可通过 require(“module/name”).func() 来调用某个对外方法测试(前提是，该模块已经载入了)<br>jsonp服务依赖 callback=define !!!<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">"http://example.com/api/data.json?callback=define"</span>],</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="params">(data)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//The data object will be the API response for the</span></span><br><span class="line">        <span class="comment">//JSONP data call.</span></span><br><span class="line">        <span class="built_in">console</span>.log(data);</span><br><span class="line">        &#125;</span><br><span class="line">   );</span><br></pre></td></tr></table></figure></p>
+<p>测试模块时，可通过 require(“module/name”).func() 来调用某个对外方法测试(前提是，该模块已经载入了)<br>jsonp服务依赖 callback=define !!!</p>
 </blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">require</span>([<span class="string">"http://example.com/api/data.json?callback=define"</span>],</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="params">(data)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//The data object will be the API response for the</span></span><br><span class="line">    <span class="comment">//JSONP data call.</span></span><br><span class="line">    <span class="built_in">console</span>.log(data);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -260,11 +272,15 @@
     
 <nav id="article-nav">
   
-  
-    <a href="/2015/10/22/weixinApi/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">微信JS SDK</div>
-      <strong class="article-nav-caption">></strong>
+    <a href="/2015/10/30/welcome/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
     </a>
+  
   
 </nav>
 
@@ -276,7 +292,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="requirejs" data-title="require 笔记" data-url="youngsh.github.io/2015/10/23/requirejs/"></div>
+	<div class="ds-thread" data-thread-key="requirejs" data-title="" data-url="youngsh.github.io/2015/10/30/requirejs/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
